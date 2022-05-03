@@ -8,7 +8,7 @@
 
     <div class="m-2 d-flex justify-content-around">
         <div v-for="sheet of [1,2,3,4]" :key="sheet" class="card" style="width: 18rem;">
-            <img src="assets/img/example-sheet.jpg" class="card-img-top" alt="example-sheet">
+            <!-- <img src="assets/img/example-sheet.jpg" class="card-img-top" alt="example-sheet"> -->
             <div class="card-body bg-dark">
                 <h5 class="card-title">Sheet 1</h5>
                 <div class="d-flex justify-content-between">

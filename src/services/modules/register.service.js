@@ -1,25 +1,41 @@
-import {axios} from 'axios'
+import axios from 'axios'
+// const axios = require('axios').default;
 
-export const signIn = async (url, payload) => {
-   return axios.post('login ',payload)
-   .then(({data}) => {
-        return Promise.resolve(data)
-   })
-   .catch((err) => {
-       return Promise.reject(err)
-   })
+
+export const registerAuth = async (url, payload) => {
+    // let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCFfIeHfupYXw89FUOMeorhfQrndz7iIck";
+    console.log(payload);
+    return axios.post(url,payload)
+    .then((response)=>{
+        localStorage.setItem('idToken',response.data.idToken);
+        localStorage.setItem('localId',response.data.localId);
+        registerDB(payload);
+    });
 }
 
-// registerAuth(dataJSON:{}):Observable<{}>{
-//     // let datos = { ...dataJSON, returnSecureToken: true };
-//     let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCFfIeHfupYXw89FUOMeorhfQrndz7iIck";
-//     return this.http.post<{idToken:string, localId:string}>(url,JSON.stringify(dataJSON))
-//     .pipe(
-//       map(response => {
-//         console.log("response", response);
-//         localStorage.setItem('idToken',response.idToken);
-//         localStorage.setItem('localId',response.localId);
-//         return response;
-//       })
-//     );
-//   }
+async function registerDB(payload){
+    let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/users/";
+    let url2 = url+localStorage.getItem('localId')+".json?auth="+localStorage.getItem('idToken');
+    return axios.put(url2,payload)
+    .then((response)=>{
+        localStorage.removeItem('idToken');
+        localStorage.removeItem('localId');
+        console.log(response);
+    });
+}
+
+export async function login(payload){
+    let url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCFfIeHfupYXw89FUOMeorhfQrndz7iIck";
+    return axios.post(url,payload)
+    .then((response)=>{
+        console.log("response", response);
+        localStorage.setItem('idToken',response.idToken);
+        localStorage.setItem('localId',response.localId);
+    })
+}
+
+function logout(){
+    localStorage.removeItem('idToken');
+    localStorage.removeItem('localId');
+    localStorage.removeItem("idSheet");
+}

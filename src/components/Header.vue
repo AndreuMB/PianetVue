@@ -4,16 +4,19 @@
         <a class="navbar-brand" href="#">Pianet</a>
         <ul class="navbar-nav">
             <li class="nav-item">
-                <router-link class="nav-link" to="#/home">Home</router-link>
+                <router-link class="nav-link" to="/home">Home</router-link>
             </li>
             <li v-if="user" class="nav-item">
-                <a class="nav-link" href="#/about">My Sheets</a>
+                <a class="nav-link" >My Sheets</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#/about">Compose</a>
+                <a class="nav-link">Compose</a>
+            </li>
+            <li>
+              <button @click="test">TEST</button>
             </li>
         </ul>
-        <div v-if="user" class="collapse navbar-collapse justify-content-end" id="userMenu">
+        <div v-if="user==true" class="collapse navbar-collapse justify-content-end" id="userMenu">
             <ul class="navbar-nav">
               <li class="nav-item">
                 <a class="nav-link" id="profile" href="#">{{username}}</a>
@@ -39,11 +42,16 @@
 
 <script>
 export default {
-    data:function(){
+  inject: ['user'],
+    data(){
         return{
-            user: false,
         }
     },
+    methods:{
+      test(){
+        console.log(this.user);
+      }
+    }
 }
 </script>
 

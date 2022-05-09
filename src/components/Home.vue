@@ -24,10 +24,9 @@
 
 <script>
 export default {
-  data:function(){
+  data(){
     return{
-      sheet: ["This is a home page",["!"]],
-      text: ""
+
     }
   },
 }

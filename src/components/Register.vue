@@ -1,6 +1,6 @@
 <template>
     <div class="container p-5">
-    <form method="POST" @submit="register">
+    <form method="POST" ref="form_login" @submit="register">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" v-model="username" required/>
@@ -11,7 +11,7 @@
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" v-model="password" required/>
+            <input type="password" class="form-control" minlength="6" v-model="password" required/>
         </div>
         <button  type="submit" class="btn btn-primary">Register</button>
     </form>
@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import { signIn } from "@/services"
+import { registerAuth } from "@/services"
+
 export default {
     data(){
         return{
@@ -28,19 +29,14 @@ export default {
     },
 
     methods:{
-        register(event){
+        
+        async register(event){
             event.preventDefault();
-            console.log("enter register");
-            console.log(this.username);
-            console.log(signIn);
-            // this.registerService.registerAuth(this.registerForm.value).subscribe(datos=>{
-            //     console.log(datos);
-            //     // let data2 = {"user": this.user, "email":this.email}
-            //     this.registerService.registerDB(this.registerForm.value).subscribe(datos=>{
-            //         console.log(datos);
-            //         this.router.navigate(['/login']);
-            //     })
-            // })
+            let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCFfIeHfupYXw89FUOMeorhfQrndz7iIck";
+            await registerAuth(url,
+                {username: this.username, email: this.email, password: this.password}
+            );
+            this.$router.push('login');
         }
     }
 

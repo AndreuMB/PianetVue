@@ -7,10 +7,10 @@
                 <router-link class="nav-link" to="/home">Home</router-link>
             </li>
             <li v-if="user" class="nav-item">
-                <a class="nav-link" >My Sheets</a>
+                <a class="nav-link">My Sheets</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link">Compose</a>
+                <router-link class="nav-link" to="/compose">Compose</router-link>
             </li>
         </ul>
         <div v-if="user" class="collapse navbar-collapse justify-content-end" id="userMenu">
@@ -45,9 +45,11 @@ export default {
     if (localStorage.getItem('idToken')){
       console.log("idtoken = " + localStorage.getItem('idToken'));
       this.user = true;
+      this.username = localStorage.getItem('username');
     }
     this.emitter.on("userValid", valid => {
       this.user = valid;
+      this.username = localStorage.getItem('username');
       console.log("this.user = " + this.user);
       this.$forceUpdate();
     });
@@ -55,16 +57,12 @@ export default {
   data(){
       return{
         // user: this.getUser(),
+        username: "",
+        user:""
       }
   },
 
   computed: {
-
-    // getUser(){
-    //   return     this.$root.$on('validationUser', data => {
-    //     console.log(data);
-    // });
-    // }
   },
 
   methods:{

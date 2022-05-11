@@ -7,7 +7,10 @@
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="text" class="form-control" v-model="email" required/>
+            <input type="text" class="form-control" v-model="email" 
+            pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+            required
+            />
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>

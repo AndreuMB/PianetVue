@@ -1,5 +1,5 @@
 <template>
-    <header>
+    <header ref="header">
       <div class="navbar navbar-expand navbar-light bg-light" id="navbarNav">
         <a class="navbar-brand" href="#">Pianet</a>
         <ul class="navbar-nav">
@@ -12,17 +12,14 @@
             <li class="nav-item">
                 <a class="nav-link">Compose</a>
             </li>
-            <li>
-              <button @click="test">TEST</button>
-            </li>
         </ul>
-        <div v-if="user==true" class="collapse navbar-collapse justify-content-end" id="userMenu">
+        <div v-if="user" class="collapse navbar-collapse justify-content-end" id="userMenu">
             <ul class="navbar-nav">
               <li class="nav-item">
                 <a class="nav-link" id="profile" href="#">{{username}}</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" @click="logout">Logout</a>
+                <a class="nav-link" @click="logoutHeader">Logout</a>
               </li>
             </ul>
         </div>
@@ -41,17 +38,42 @@
 </template>
 
 <script>
+import { logout } from "@/services"
+
 export default {
-  inject: ['user'],
-    data(){
-        return{
-        }
-    },
-    methods:{
-      test(){
-        console.log(this.user);
-      }
+  beforeMount() {
+    if (localStorage.getItem('idToken')){
+      console.log("idtoken = " + localStorage.getItem('idToken'));
+      this.user = true;
     }
+    this.emitter.on("userValid", valid => {
+      this.user = valid;
+      console.log("this.user = " + this.user);
+      this.$forceUpdate();
+    });
+  },
+  data(){
+      return{
+        // user: this.getUser(),
+      }
+  },
+
+  computed: {
+
+    // getUser(){
+    //   return     this.$root.$on('validationUser', data => {
+    //     console.log(data);
+    // });
+    // }
+  },
+
+  methods:{
+    logoutHeader(){
+      logout();
+      this.emitter.emit("userValid", false);
+      this.$forceUpdate();
+    }
+  }
 }
 </script>
 

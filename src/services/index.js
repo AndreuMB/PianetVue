@@ -1,1 +1,1 @@
-export * from './modules/register.service'
+export * from './modules/auth.service'

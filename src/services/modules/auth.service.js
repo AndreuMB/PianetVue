@@ -29,12 +29,14 @@ export async function login(payload){
     return axios.post(url,payload)
     .then((response)=>{
         console.log("response", response);
-        localStorage.setItem('idToken',response.idToken);
-        localStorage.setItem('localId',response.localId);
+        console.log("idToken", response.data);
+        localStorage.setItem('idToken',response.data.idToken);
+        localStorage.setItem('localId',response.data.localId);
+        return true;
     })
 }
 
-function logout(){
+export function logout(){
     localStorage.removeItem('idToken');
     localStorage.removeItem('localId');
     localStorage.removeItem("idSheet");

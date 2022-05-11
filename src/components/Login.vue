@@ -14,32 +14,28 @@
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
-        <button @click="testtt">dsaf</button>
     </div>
 </template>
 
 <script>
 import { login } from "@/services"
+
 export default {
 
-  
-
-    computed:{
-        getUser(){
-            return this.user;
+    data(){
+        return{
         }
     },
 
     methods:{
         async login(form){
             form.preventDefault();
-            await login({email: this.email, password: this.password, returnSecureToken: true});
-            this.$router.push('home');
+            let response = await login({email: this.email, password: this.password, returnSecureToken: true});
+            if (response) {
+                this.emitter.emit("userValid", true);
+                this.$router.push('home');
+            }
         },
-        testtt(){
-            console.log(this.user);
-            app.provide('user', true)
-        }
     }
 
 }

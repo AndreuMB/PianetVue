@@ -16,6 +16,7 @@ export const registerAuth = async (url, payload) => {
 async function registerDB(payload){
     let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/users/";
     let url2 = url+localStorage.getItem('localId')+".json?auth="+localStorage.getItem('idToken');
+    delete payload.password;
     return axios.put(url2,payload)
     .then((response)=>{
         localStorage.removeItem('idToken');
@@ -36,7 +37,7 @@ export async function login(payload){
     })
 }
 
-async function getUsername(){
+export async function getUsername(){
     let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/users/";
     let url2 = url+localStorage.getItem('localId')+".json?auth="+localStorage.getItem('idToken');
     return axios.get(url2)
@@ -44,11 +45,14 @@ async function getUsername(){
         console.log("response username", response.data.username);
         localStorage.setItem('username',response.data.username);
         return true;
+    }).catch(function (error){
+        console.log("not log error username",error);
+        return false;
     })
 }
 
 export function logout(){
     localStorage.removeItem('idToken');
     localStorage.removeItem('localId');
-    localStorage.removeItem("idSheet");
+    localStorage.removeItem("sheet");
 }

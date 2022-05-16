@@ -7,7 +7,7 @@
                 <router-link class="nav-link" to="/home">Home</router-link>
             </li>
             <li v-if="user" class="nav-item">
-                <a class="nav-link">My Sheets</a>
+                <router-link class="nav-link" to="/sheets">My Sheets</router-link>
             </li>
             <li class="nav-item">
                 <router-link class="nav-link" to="/compose">Compose</router-link>
@@ -29,7 +29,7 @@
               <router-link class="nav-link" to="/login">Login</router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="logout_link" href="/register">Register</a>
+              <router-link class="nav-link" to="/register">Register</router-link>
             </li>
           </ul>
         </div>
@@ -38,14 +38,22 @@
 </template>
 
 <script>
-import { logout } from "@/services"
+import { logout, getUsername } from "@/services"
 
 export default {
-  beforeMount() {
+  async beforeMount() {
     if (localStorage.getItem('idToken')){
       console.log("idtoken = " + localStorage.getItem('idToken'));
       this.user = true;
       this.username = localStorage.getItem('username');
+
+    }
+    if (localStorage.getItem('idToken')){
+      console.log("get false " + await getUsername());
+      if (await getUsername()==false) {
+        console.log("enter logout");
+        this.logoutHeader();
+      }
     }
     this.emitter.on("userValid", valid => {
       this.user = valid;
@@ -54,6 +62,11 @@ export default {
       this.$forceUpdate();
     });
   },
+
+  async mounted(){
+
+  },
+
   data(){
       return{
         // user: this.getUser(),
@@ -66,10 +79,10 @@ export default {
   },
 
   methods:{
-    logoutHeader(){
-      logout();
+    async logoutHeader(){
+      await logout();
       this.emitter.emit("userValid", false);
-      this.$forceUpdate();
+      this.$router.push('home');
     }
   }
 }

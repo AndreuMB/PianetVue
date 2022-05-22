@@ -2,27 +2,35 @@
     <div id="container">
         <h1>{{ title }}</h1>
         <div style="background-color: white;" ref="stave_container"></div>
+        <div v-if="view_sw">
         <a v-for="note of notes" :key="note" class="btn btn-dark" @click="print_note(note)">{{note}}</a>
         <br>
-        <a class="btn btn-dark" @click="setDuration('8')">8</a>
-        <a class="btn btn-dark" @click="setDuration('q')">Q</a>
-        <a class="btn btn-dark" @click="setDuration('h')">H</a>
-
+        
+        <a class="btn btn-dark bg-white" @click="setDuration('8')"><img src="src/assets/8.png" alt="8"></a>
+        <a class="btn btn-dark bg-white" @click="setDuration('q')"><img src="src/assets/1.png" alt="Q"></a>
+        <a class="btn btn-dark bg-white" @click="setDuration('h')"><img src="src/assets/2.png" alt="H"></a>
+        
         <a v-if="user" class="btn btn-primary" @click="saveSheet()">Save</a>
+        </div>
     </div>
 </template>
 
 <script>
 import Vex from "vexflow";
-import { getSheet, saveSheet } from "@/services"
+import { getSheet, saveSheet, createSheet } from "@/services"
 export default {
     async beforeMount(){
+        console.log('Params: ', this.$route.params.view);
+        if (this.$route.params.view=="true") {
+            this.view_sw=false;
+        }
+
         if (localStorage.getItem('idToken')){
-            // console.log("idtoken = " + localStorage.getItem('idToken'));
             this.user = true;
         }
         if (localStorage.getItem('sheet')){
             this.sheet = await getSheet();
+            console.log("test" + this.sheet);
             this.title = this.sheet.title;
         }
     },
@@ -30,13 +38,17 @@ export default {
         window.addEventListener('resize', this.resizeSheet);
         if (localStorage.getItem('sheet')){
             this.sheet = await getSheet();
-            // this.saveSheet();
         }
+        this.data.div = this.$refs.stave_container;
         this.getSheet();
+
+        if (localStorage.getItem('idToken') && localStorage.getItem('sheet')){
+            this.saveSheet();
+        }
     },
     unmounted() {
         window.removeEventListener('resize', this.resizeSheet);
-        localStorage.removeItem("sheet");
+        // localStorage.removeItem("sheet");
     },
     data(){
         return{
@@ -56,7 +68,8 @@ export default {
                 timeDuration:0,
                 durationValue:1
             },
-            sheet : []
+            sheet : [],
+            view_sw : true,
         }
     },
     methods:{
@@ -78,7 +91,12 @@ export default {
             this.data.notesMeasurex = [];
             this.data.timex = 10;
             this.data.yStave = 0;
-            this.data.div = this.$refs.stave_container;
+            this.data.timeDuration = 0;
+
+            
+
+            this.data.div.innerHTML="";
+            
             // COMPLEX VF
             
             let VF = Vex.Flow;    
@@ -103,7 +121,7 @@ export default {
         },
 
         print_note(id,duration,sw=true){
-            // console.log("print_note");
+            console.log("print_note");
             
             let data = this.data;
             let context = this.context;
@@ -160,7 +178,7 @@ export default {
             // console.log(this.data.div.offsetWidth + "%" + this.data.timewidth + "=" +this.data.div.offsetWidth%this.data.timewidth);
             // if (this.data.div.offsetWidth%this.data.timewidth < 50) {
                 // console.log("enter resize if");
-                this.data.div.innerHTML="";
+                
                 this.createSheet();
                 // console.log("resize ", this.data.notesComplete);
                 this.data.notesComplete.forEach((element) => {
@@ -180,29 +198,39 @@ export default {
         async saveSheet(){
             let title = "";
             if (!localStorage.getItem('sheet')) {
-                title=prompt("Title:")
+                title=prompt("Title:");
+                if (title != null) {
+                    let response = await createSheet({ title:title });
+                    localStorage.setItem("sheet", response);
+                }else{
+                    return
+                }
             }
-            console.log("save sheet " + title);
-            let svg = document.querySelector("svg");
+            
+            let div2 = document.createElement("div");
+            div2.style="background-color:white; width:650px; height:900px;";
+            let container = document.querySelector("#container");
+            container.append(div2);
+            this.data.div = div2;
+            this.resizeSheet();
+            let svg = document.querySelectorAll("svg")[1];
+            // let svg = document.querySelector("svg");
             // console.log("svg " , svg);
             
             var xml = new XMLSerializer().serializeToString(svg);
-        
+
+            div2.remove();
+
             // make it base64
             var svg64 = btoa(xml);
             var b64Start = 'data:image/svg+xml;base64,';
         
             // prepend a "header"
             let image64 = b64Start + svg64;
-
-
-            // console.log("image ", image64);
-            
-
-            console.log(this.data.notesComplete);
             
             let response = await saveSheet(this.data.notesComplete,image64,title);
             console.log("response save sheet", response);
+            this.data.div=this.$refs.stave_container;
         },
 
         setDuration(duration){

@@ -6,14 +6,17 @@
         <h4 class="display-4 contental-center mb-2">Popular sheets</h4>
     </div>
 
-    <div class="m-2 d-flex justify-content-around">
-        <div v-for="sheet of [1,2,3,4]" :key="sheet" class="card" style="width: 18rem;">
-            <!-- <img src="assets/img/example-sheet.jpg" class="card-img-top" alt="example-sheet"> -->
+    <div class="d-flex justify-content-around row p-0">
+        <div v-for="sheet of sheets" :key="sheet" class="card col-2 p-0 m-4">
+            <img :src="sheet.img" class="card-img-top img_card" alt="example-sheet">
             <div class="card-body bg-dark">
-                <h5 class="card-title">Sheet 1</h5>
                 <div class="d-flex justify-content-between">
-                    <p class="card-text">Andreu Micó</p>
-                    <a href="#" class="btn btn-primary">Play it</a>
+                    <h5 class="card-title">{{ sheet.title }}</h5>
+                    <span>{{ sheet.views }}<i class="fa-solid fa-eye"></i></span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <p class="card-text">{{ sheet.author }}</p>
+                    <a class="btn btn-primary" @click="play(sheet.id)">Play it</a>
                 </div>
             </div>
         </div>
@@ -23,12 +26,28 @@
 </template>
 
 <script>
-export default {
-  data(){
-    return{
+import { getHomeSheets } from "@/services"
 
+export default {
+    async mounted(){
+        this.sheets = await getHomeSheets() || [];
+        console.log("this.sheets",this.sheets);
+    },
+    data(){
+        return{
+            sheets:[]
+        }
+    },
+    methods:{
+        play(id){
+            console.log("enter play" + id);
+            localStorage.setItem('sheet',id);
+            this.$router.push({
+                name: 'compose',
+                params: {view : true}
+            });
+        },
     }
-  },
 }
 </script>
 

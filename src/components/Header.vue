@@ -43,13 +43,11 @@ import { logout, getUsername } from "@/services"
 export default {
   async beforeMount() {
     if (localStorage.getItem('idToken')){
-      console.log("idtoken = " + localStorage.getItem('idToken'));
       this.user = true;
       this.username = localStorage.getItem('username');
 
     }
     if (localStorage.getItem('idToken')){
-      console.log("get false " + await getUsername());
       if (await getUsername()==false) {
         console.log("enter logout");
         this.logoutHeader();

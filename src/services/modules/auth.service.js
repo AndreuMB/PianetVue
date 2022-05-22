@@ -37,14 +37,14 @@ export async function login(payload){
     })
 }
 
-export async function getUsername(){
+export async function getUsername(user_id=null){
     let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/users/";
-    let url2 = url+localStorage.getItem('localId')+".json?auth="+localStorage.getItem('idToken');
+    let user = user_id || localStorage.getItem('localId');
+    let url2 = url+user+".json?auth="+localStorage.getItem('idToken');
     return axios.get(url2)
     .then((response)=>{
-        console.log("response username", response.data.username);
         localStorage.setItem('username',response.data.username);
-        return true;
+        return response.data.username;
     }).catch(function (error){
         console.log("not log error username",error);
         return false;

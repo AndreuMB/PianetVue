@@ -142,15 +142,32 @@ export async function getAllSheets(){
     // return "";
 }
 
-export async function getHomeSheets(){
+export async function getHomeSheets(order=""){
     let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets/";
-    let url2 = url+".json";
+    let urlorder="";
+    switch (order) {
+        case "views":
+            urlorder='?orderBy="views"&limitToLast=4';
+            break;
+        case "date":
+            urlorder='?orderBy="date"&limitToLast=4';
+            break;
+        case "random":
+            let sheetNum = await axios.get("https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets.json") // user sheets
+            .then(async (response)=>{ 
+                return Object.keys(response.data).length;
+            });
+            urlorder='?orderBy="date"&limitToLast=4';
+            break;
+    }
+    let url2 = url+".json"+urlorder;
+    
 
     return axios.get(url2) // user sheets
     .then(async (response)=>{ 
         for (const [key, value] of Object.entries(response.data)) {
             response.data[key].id=key
-        }         
+        }
         return response.data;
     });
 }

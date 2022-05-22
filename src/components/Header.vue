@@ -10,7 +10,7 @@
                 <router-link class="nav-link" to="/sheets">My Sheets</router-link>
             </li>
             <li class="nav-item">
-                <router-link class="nav-link" to="/compose">Compose</router-link>
+                <div class="nav-link" @click="toCompose">Compose</div>
             </li>
         </ul>
         <div v-if="user" class="collapse navbar-collapse justify-content-end" id="userMenu">
@@ -81,6 +81,10 @@ export default {
       await logout();
       this.emitter.emit("userValid", false);
       this.$router.push('home');
+    },
+    toCompose(){
+      localStorage.removeItem('sheet');
+      this.$router.push('compose');
     }
   }
 }

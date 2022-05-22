@@ -21,29 +21,26 @@ import { getSheet, saveSheet, createSheet } from "@/services"
 export default {
     async beforeMount(){
         console.log('Params: ', this.$route.params.view);
-        if (this.$route.params.view=="true") {
-            this.view_sw=false;
-        }
-
+        
         if (localStorage.getItem('idToken')){
             this.user = true;
-        }
-        if (localStorage.getItem('sheet')){
-            this.sheet = await getSheet();
-            console.log("test" + this.sheet);
-            this.title = this.sheet.title;
         }
     },
     async mounted() {
         window.addEventListener('resize', this.resizeSheet);
         if (localStorage.getItem('sheet')){
             this.sheet = await getSheet();
+            this.title = this.sheet.title;
         }
         this.data.div = this.$refs.stave_container;
         this.getSheet();
 
         if (localStorage.getItem('idToken') && localStorage.getItem('sheet')){
-            this.saveSheet();
+            if (this.$route.params.view=="true") {
+                this.view_sw=false;
+            }else{
+                this.saveSheet();
+            }            
         }
     },
     unmounted() {
@@ -81,8 +78,8 @@ export default {
                     console.log("sheet", this.sheet.sheetNotes);
                     this.data.notesComplete = this.sheet.sheetNotes;
                     this.data.notesComplete.forEach((element) => {
-                        console.log(element.keys);
-                        this.print_note(element.keys,false);
+                        // console.log(element.keys);
+                        this.print_note(element.keys,element.duration,false);
                     });
                 }
             }
@@ -121,7 +118,7 @@ export default {
         },
 
         print_note(id,duration,sw=true){
-            console.log("print_note");
+            // console.log("print_note");
             
             let data = this.data;
             let context = this.context;
@@ -174,18 +171,12 @@ export default {
             return data;
         },
 
-        resizeSheet(){
-            // console.log(this.data.div.offsetWidth + "%" + this.data.timewidth + "=" +this.data.div.offsetWidth%this.data.timewidth);
-            // if (this.data.div.offsetWidth%this.data.timewidth < 50) {
-                // console.log("enter resize if");
-                
-                this.createSheet();
-                // console.log("resize ", this.data.notesComplete);
-                this.data.notesComplete.forEach((element) => {
-                    // console.log(element.keys);
-                    this.print_note(element.keys,element.duration,false);
-                });
-            // }
+        resizeSheet(){                
+            this.createSheet();
+            this.data.notesComplete.forEach((element) => {
+                console.log(element.keys);
+                this.print_note(element.keys,element.duration,false);
+            });
         },
 
         change_line(width_stave, width_div){

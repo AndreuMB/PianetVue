@@ -79,13 +79,15 @@ import { getHomeSheets } from "@/services"
 export default {
     async mounted(){
         this.sheetsPopular = await getHomeSheets("views") || [];
-        console.log(this.sheetsPopular);
+        console.log("popula sheets",this.sheetsPopular);
         this.sheetsLatest = await getHomeSheets("date") || [];
         this.sheetsRandom = await getHomeSheets("random") || []
     },
     data(){
         return{
-            sheets:[]
+            sheetsPopular:[],
+            sheetsLatest:[],
+            sheetsRandom:[],
         }
     },
     methods:{

@@ -11,6 +11,7 @@
         <a class="btn btn-dark bg-white" @click="setDuration('h')"><img src="src/assets/2.png" alt="H"></a>
         
         <a v-if="user" class="btn btn-primary" @click="saveSheet()">Save</a>
+        <div v-if="user" class="btn btn-primary" @click="downloadSheet()">Download</div>
         </div>
     </div>
 </template>
@@ -65,6 +66,8 @@ export default {
                 timeDuration:0,
                 durationValue:1
             },
+            heightSvg:700,
+            renderer:"",
             sheet : [],
             view_sw : true,
         }
@@ -89,6 +92,7 @@ export default {
             this.data.timex = 10;
             this.data.yStave = 0;
             this.data.timeDuration = 0;
+            this.heightSvg=700;
 
             
 
@@ -98,13 +102,13 @@ export default {
             
             let VF = Vex.Flow;    
             
-            let renderer = new VF.Renderer(this.data.div, VF.Renderer.Backends.SVG);
+            this.renderer = new VF.Renderer(this.data.div, VF.Renderer.Backends.SVG);
             
             // Size our SVG:
-            renderer.resize(this.data.div.offsetWidth, 700); // width and height to print notes
+            this.renderer.resize(this.data.div.offsetWidth, this.heightSvg); // width and height of svg where notes are printed
             
             // Get a drawing context:
-            this.context = renderer.getContext();
+            this.context = this.renderer.getContext();
             
             // let stave:any = [];
             // let song:any = []
@@ -129,6 +133,11 @@ export default {
                 if (this.change_line(data.timex+data.timewidth, data.div.offsetWidth)) {
                     data.timex = 10;
                     data.yStave += 100;
+                    if (data.yStave>=this.heightSvg) {
+                        console.log("enter heightSvg");
+                        this.heightSvg+=100;
+                        this.renderer.resize(this.data.div.offsetWidth, this.heightSvg);
+                    }
                 }
                 // new time / x,y,width
                 data.staveMeasurex = new Vex.Flow.Stave(data.timex,data.yStave,data.timewidth);
@@ -242,7 +251,14 @@ export default {
                 default:
                     break;
             }
-        }
+        },
+        
+        downloadSheet(){
+            console.log("download");
+            // let doc = new pdfkit();
+            const PDFDocument = require('pdfkit');
+            const doc = new PDFDocument;
+        },
     }
 }
 </script>

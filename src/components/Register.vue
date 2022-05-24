@@ -3,7 +3,7 @@
     <form method="POST" ref="form_login" @submit="register">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" v-model="username" required/>
+            <input type="text" class="form-control" minlength="3" maxlength="15" v-model="username" required/>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>

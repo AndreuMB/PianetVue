@@ -3,15 +3,15 @@
         <h1>{{ title }}</h1>
         <div style="background-color: white;" ref="stave_container"></div>
         <div v-if="view_sw">
-        <a v-for="note of notes" :key="note" class="btn btn-dark" @click="print_note(note)">{{note}}</a>
-        <br>
-        
-        <a class="btn btn-dark bg-white" @click="setDuration('8')"><img src="src/assets/8.png" alt="8"></a>
-        <a class="btn btn-dark bg-white" @click="setDuration('q')"><img src="src/assets/1.png" alt="Q"></a>
-        <a class="btn btn-dark bg-white" @click="setDuration('h')"><img src="src/assets/2.png" alt="H"></a>
-        
-        <a v-if="user" class="btn btn-primary" @click="saveSheet()">Save</a>
-        <div v-if="user" class="btn btn-primary" @click="downloadSheet()">Download</div>
+            <a v-for="note of notes" :key="note" class="btn btn-dark" @click="print_note(note)">{{note}}</a>
+            <br>
+            
+            <a class="btn btn-dark bg-white" @click="setDuration('8')"><img src="src/assets/8.png" alt="8"></a>
+            <a class="btn btn-dark bg-white" @click="setDuration('q')"><img src="src/assets/1.png" alt="Q"></a>
+            <a class="btn btn-dark bg-white" @click="setDuration('h')"><img src="src/assets/2.png" alt="H"></a>
+            
+            <a v-if="user" class="btn btn-primary" @click="saveSheet()">Save</a>
+            <div v-if="user" class="btn btn-primary" @click="downloadSheet()">Download</div>
         </div>
     </div>
 </template>
@@ -19,6 +19,8 @@
 <script>
 import Vex from "vexflow";
 import { getSheet, saveSheet, createSheet } from "@/services"
+import { Canvg } from 'canvg';
+import { jsPDF } from "jspdf";
 export default {
     async beforeMount(){
         console.log('Params: ', this.$route.params.view);
@@ -70,6 +72,7 @@ export default {
             renderer:"",
             sheet : [],
             view_sw : true,
+            image:""
         }
     },
     methods:{
@@ -201,25 +204,18 @@ export default {
                 title=prompt("Title:");
                 if (title != null) {
                     let response = await createSheet({ title:title });
+                    this.title=title;
                     localStorage.setItem("sheet", response);
                 }else{
                     return
                 }
             }
             
-            let div2 = document.createElement("div");
-            div2.style="background-color:white; width:650px; height:900px;";
-            let container = document.querySelector("#container");
-            container.append(div2);
-            this.data.div = div2;
-            this.resizeSheet();
-            let svg = document.querySelectorAll("svg")[1];
-            // let svg = document.querySelector("svg");
-            // console.log("svg " , svg);
+
+            let div = this.setTemplateSVG(650);
+            let svg = div.querySelectorAll("svg")[0];
             
             var xml = new XMLSerializer().serializeToString(svg);
-
-            div2.remove();
 
             // make it base64
             var svg64 = btoa(xml);
@@ -227,10 +223,26 @@ export default {
         
             // prepend a "header"
             let image64 = b64Start + svg64;
+
+
+            div.remove();
+
+
+            // save in db
             
             let response = await saveSheet(this.data.notesComplete,image64,title);
             console.log("response save sheet", response);
+        },
+
+        setTemplateSVG(width){
+            let div2 = document.createElement("div");
+            div2.style=`background-color:white; width:${width}px; height:230px;`;
+            let container = document.querySelector("#container");
+            container.append(div2);
+            this.data.div = div2;
+            this.resizeSheet();
             this.data.div=this.$refs.stave_container;
+            return div2;
         },
 
         setDuration(duration){
@@ -253,11 +265,24 @@ export default {
             }
         },
         
-        downloadSheet(){
-            // console.log("download");
-            // // let doc = new pdfkit();
-            // const PDFDocument = require('pdfkit');
-            // const doc = new PDFDocument;
+        async downloadSheet(){
+
+            // PDF FILE
+
+            const canvas = document.createElement('CANVAS');
+            const ctx = canvas.getContext('2d');
+            let div = this.setTemplateSVG(1000);
+            let svg = div.querySelectorAll("svg")[0].outerHTML;
+            console.log(svg);
+            const v = await Canvg.from(ctx, svg)
+            v.render()
+            var imgData = canvas.toDataURL('image/png');
+            // // Generate PDF
+            var doc = new jsPDF('p', 'pt', 'a4');
+            doc.addImage(imgData, 'PNG', 50, 50, 550, 0);
+            doc.save(this.title+'.pdf');
+
+            div.remove();
         },
     }
 }

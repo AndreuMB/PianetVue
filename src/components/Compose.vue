@@ -37,11 +37,11 @@ export default {
         this.getSheet();
 
         if (localStorage.getItem('idToken') && localStorage.getItem('sheet')){
-            if (this.$route.params.view=="true") {
-                this.view_sw=false;
-            }else{
-                this.saveSheet();
-            }            
+            this.saveSheet();      
+        }
+
+        if (this.$route.params.view=="true") {
+            this.view_sw=false;
         }
     },
     unmounted() {
@@ -254,10 +254,10 @@ export default {
         },
         
         downloadSheet(){
-            console.log("download");
-            // let doc = new pdfkit();
-            const PDFDocument = require('pdfkit');
-            const doc = new PDFDocument;
+            // console.log("download");
+            // // let doc = new pdfkit();
+            // const PDFDocument = require('pdfkit');
+            // const doc = new PDFDocument;
         },
     }
 }

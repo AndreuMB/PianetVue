@@ -22,15 +22,11 @@ import { getSheet, saveSheet, createSheet } from "@/services"
 import { Canvg } from 'canvg';
 import { jsPDF } from "jspdf";
 export default {
-    async beforeMount(){
-        console.log('Params: ', this.$route.params.view);
-        
+    async mounted() {
+        window.addEventListener('resize', this.resizeSheet);
         if (localStorage.getItem('idToken')){
             this.user = true;
         }
-    },
-    async mounted() {
-        window.addEventListener('resize', this.resizeSheet);
         if (localStorage.getItem('sheet')){
             this.sheet = await getSheet();
             this.title = this.sheet.title;
@@ -96,8 +92,6 @@ export default {
             this.data.yStave = 0;
             this.data.timeDuration = 0;
             this.heightSvg=700;
-
-            
 
             this.data.div.innerHTML="";
             
@@ -236,14 +230,16 @@ export default {
 
         setTemplateSVG(width){
             let div2 = document.createElement("div");
-            div2.style=`background-color:white; width:${width}px; height 500px;`;
-            
+            div2.style=`background-color:white; width:${width}px`;
             let container = document.querySelector("#container");
             container.append(div2);
             console.log(div2);
+
             this.data.div = div2;
             this.resizeSheet();
             this.data.div=this.$refs.stave_container;
+            this.resizeSheet();
+            
             return div2;
         },
 

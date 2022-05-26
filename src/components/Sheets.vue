@@ -5,7 +5,7 @@
 
     <div class="d-flex justify-content-around row p-0">
         <div v-for="sheet of sheets" :key="sheet" class="card col-2 p-0 m-4">
-            <img :src="sheet.img" class="card-img-top img_card" alt="example-sheet">
+            <img :src="sheet.img" class="card-img-top img_card" style="object-fit: cover; height:20em; object-position: 0 0;" alt="sheet">
             <div class="card-body bg-dark">
                 <h5 class="card-title">{{ sheet.title }}</h5>
                 <div class="d-flex justify-content-between">
@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="card col-2 p-0 m-4 container_image">
-            <img class="card-img-top img_card" src="src/assets/new_sheet.svg" alt="example-sheet">
+            <img class="card-img-top img_card" src="src/assets/new_sheet.svg" alt="new-sheet">
             <div class="centered">NEW SHEET</div>
             <div class="card-body bg-dark new_body">
                 <form method="POST" @submit="newSheet" >

@@ -236,9 +236,11 @@ export default {
 
         setTemplateSVG(width){
             let div2 = document.createElement("div");
-            div2.style=`background-color:white; width:${width}px; height:230px;`;
+            div2.style=`background-color:white; width:${width}px; height 500px;`;
+            
             let container = document.querySelector("#container");
             container.append(div2);
+            console.log(div2);
             this.data.div = div2;
             this.resizeSheet();
             this.data.div=this.$refs.stave_container;

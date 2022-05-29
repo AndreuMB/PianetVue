@@ -44,6 +44,7 @@ export default {
     async mounted(){
         this.sheets = await getSheetsAll2() || [];
         this.sheetsFilter = this.sheets;
+        this.sortBy();
         console.log(this.sheets);
     },
     data(){
@@ -71,15 +72,23 @@ export default {
             this.sheetsFilter=arrayOfObj;
         },
 
-        compare( a, b, sort ) {
-            if ( a[this.sort] < b[this.sort] ){
+        compare( a, b ) {
+            if ( a[this.sort] > b[this.sort] ){
                 return -1;
             }
-            if ( a[this.sort] > b[this.sort] ){
+            if ( a[this.sort] < b[this.sort] ){
                 return 1;
             }
             return 0;
-        }
+        },
+        play(id){
+            console.log("enter play" + id);
+            localStorage.setItem('sheet',id);
+            this.$router.push({
+                name: 'compose',
+                params: {view : true}
+            });
+        },
     }
 }
 </script>

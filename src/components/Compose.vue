@@ -6,10 +6,10 @@
             <a v-for="note of notes" :key="note" class="btn btn-dark" @click="print_note(note)">{{note}}</a>
             <br>
             
-            <a class="btn btn-dark bg-white" @click="setDuration('8')"><img class="size_img" src="src/assets/8.png" alt="8"></a>
-            <a class="btn btn-dark bg-white" @click="setDuration('q')"><img class="size_img" src="src/assets/1.png" alt="Q"></a>
-            <a class="btn btn-dark bg-white" @click="setDuration('h')"><img class="size_img" src="src/assets/2.png" alt="H"></a>
-            
+            <button v-for=" time in notesDuration" :key="time" :ref="'btn_'+time.name" 
+            class="btn btn-dark bg-white" @click="setDuration(time.name)">
+                <img class="size_img" :src="'src/assets/'+time.name+'.png'" :alt="time.name">
+            </button>
             <div>
                 <a v-if="user" class="btn btn-primary m-3" @click="saveSheet()">Save</a>
                 <div v-if="user" class="btn btn-primary m-3" @click="downloadSheet()">Download</div>
@@ -67,6 +67,20 @@ export default {
                 timeDuration:0,
                 durationValue:1
             },
+            notesDuration:[
+                {
+                    name:"8",
+                    duration:0.5
+                },
+                {
+                    name:"q",
+                    duration:1
+                },
+                {
+                    name:"h",
+                    duration:2
+                }
+            ],
             heightSvg:700,
             renderer:"",
             sheet : [],
@@ -128,6 +142,9 @@ export default {
                 this.setDuration(duration);
             }
             if (data.timeDuration >= 4) {
+                // this.notesDuration.forEach(element => {
+                //     this.$refs["btn_"+element.name][0].disabled = false;
+                // });
                 data.timeDuration=0;
                 data.timex = data.timex + data.timewidth;
                 // console.log("timex = " + data.timex + " div = " + data.div.offsetWidth);
@@ -145,43 +162,53 @@ export default {
                 data.staveMeasurex.setContext(context).draw(); // print stave/time
                 data.notesMeasurex = [];
             }
+            if (data.timeDuration+data.durationValue<=4) {
+                data.timeDuration=data.timeDuration+data.durationValue;
+                this.notesDuration.forEach(element => {
+                    console.log(data.timeDuration != 4);
+                    if (element.duration+data.timeDuration>4 && data.timeDuration != 4) {
+                        this.$refs["btn_"+element.name][0].disabled = true;
+                    }else{
+                        this.$refs["btn_"+element.name][0].disabled = false;
+                    }
+                });
 
-            data.timeDuration=data.timeDuration+data.durationValue;
 
+                // reload time
+                // console.log("data.notesMeasurex.length" , data.notesMeasurex.length);
+                
 
+                if (data.notesMeasurex.length != 0) {
+                // console.log("remove child");
+                
+                context.svg.removeChild(data.group);
+                }
+                data.group = context.openGroup();
 
-            // reload time
-            // console.log("data.notesMeasurex.length" , data.notesMeasurex.length);
-            
+                // add note
+                if (sw) {
+                    data.notesMeasurex.push(new Vex.Flow.StaveNote({ keys: [id+"/4"], duration: data.duration }));
+                    data.notesComplete.push({ keys: id+"/4", duration: data.duration });
+                }else{
+                    data.notesMeasurex.push(new Vex.Flow.StaveNote({ keys: [id+"/4"], duration: duration }));
 
-            if (data.notesMeasurex.length != 0) {
-            // console.log("remove child");
-            
-            context.svg.removeChild(data.group);
+                }
+
+                // console.log('id = ' + id, " context = ", context + " data = " , data);
+                // const beams = [new Vex.Flow.Beam(notes1), new Vex.Flow.Beam(notes2), new Vex.Flow.Beam(notes3)];
+                // print notes
+                Vex.Flow.Formatter.FormatAndDraw(context, data.staveMeasurex, data.notesMeasurex);
+                // beams.forEach((b) => {
+                //     b.setContext(context).draw();
+                // });
+                
+                context.closeGroup();
+                // console.log(data.notesMeasurex);
+                this.data = data;
+                return data;
             }
-            data.group = context.openGroup();
 
-            // add note
-            if (sw) {
-                data.notesMeasurex.push(new Vex.Flow.StaveNote({ keys: [id+"/4"], duration: data.duration }));
-                data.notesComplete.push({ keys: id+"/4", duration: data.duration });
-            }else{
-                data.notesMeasurex.push(new Vex.Flow.StaveNote({ keys: [id+"/4"], duration: duration }));
-
-            }
-
-            // console.log('id = ' + id, " context = ", context + " data = " , data);
-            // const beams = [new Vex.Flow.Beam(notes1), new Vex.Flow.Beam(notes2), new Vex.Flow.Beam(notes3)];
-            // print notes
-            Vex.Flow.Formatter.FormatAndDraw(context, data.staveMeasurex, data.notesMeasurex);
-            // beams.forEach((b) => {
-            //     b.setContext(context).draw();
-            // });
             
-            context.closeGroup();
-            // console.log(data.notesMeasurex);
-            this.data = data;
-            return data;
         },
 
         resizeSheet(){                

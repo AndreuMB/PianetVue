@@ -1,15 +1,17 @@
 <template>
     <div id="container">
         <h1>{{ title }}</h1>
-        <div style="background-color: white;" ref="stave_container"></div>
+        <div ref="stave_container" class="stave"></div>
         <div v-if="view_sw" class="user-btns">
             <a v-for="note of notes" :key="note" class="btn btn-dark" @click="print_note(note)">{{note}}</a>
-            <br>
-            
-            <button v-for=" time in notesDuration" :key="time" :ref="'btn_'+time.name" 
-            class="btn btn-dark bg-white" @click="setDuration(time.name)">
-                <img class="size_img" :src="'src/assets/'+time.name+'.png'" :alt="time.name">
-            </button>
+
+            <div class="btn_time">
+                <button v-for=" time in notesDuration" :key="time" :ref="'btn_'+time.name" 
+                class="btn btn-dark bg-white" @click="setDuration(time.name)">
+                    <img class="size_img" :src="'src/assets/'+time.name+'.png'" :alt="time.name">
+                </button>
+            </div>
+
             <div>
                 <a v-if="user" class="btn btn-primary m-3" @click="saveSheet()">Save</a>
                 <div v-if="user" class="btn btn-primary m-3" @click="downloadSheet()">Download</div>
@@ -332,5 +334,12 @@ export default {
     background: grey;
     border: black solid 3px;
     border-radius: 12px;
+    height:175px;
+}
+.stave{
+    overflow-y: scroll;
+    background-color: white;
+    height: 700px;
+    overflow-x: hidden;
 }
 </style>

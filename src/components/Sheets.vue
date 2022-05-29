@@ -1,10 +1,16 @@
 <template>
   <h1 class="display-1 contental-center mb-5">MY SHEETS</h1>
-    <label for="filter">Filter: </label>
-    <input type="text" name="filter">
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="filter" class="form-label">Filter: </label>
+        </div>
+        <div class="col-auto">
+            <input type="text" class="form-control" v-model="search" @input="filteredList">
+        </div>
+    </div>
 
     <div class="d-flex justify-content-around row p-0">
-        <div v-for="sheet of sheets" :key="sheet" class="card col-2 p-0 m-4">
+        <div v-for="sheet of sheetsFilter" :key="sheet" class="card col-2 p-0 m-4">
             <img :src="sheet.img" class="card-img-top img_card" style="object-fit: cover; height:20em; object-position: 0 0;" alt="sheet">
             <div class="card-body bg-dark">
                 <h5 class="card-title">{{ sheet.title }}</h5>
@@ -12,8 +18,10 @@
                     <p class="card-text">{{ sheet.author }}</p>
                     <p class="card-text">{{ new Date(sheet.date).toLocaleDateString('es-EU') }}</p>
                 </div>
-                <a class="btn btn-primary" @click="editSheet(sheet.id)">Play</a>
-                <a class="btn btn-danger" @click="deleteSheet(sheet.id)">Delete</a>
+                <div class="d-flex justify-content-between">
+                    <a class="btn btn-primary" @click="editSheet(sheet.id)">Play</a>
+                    <a class="btn btn-danger" @click="deleteSheet(sheet.id)">Delete</a>
+                </div>
             </div>
         </div>
         <div class="card col-2 p-0 m-4 container_image">
@@ -38,13 +46,16 @@ import { createSheet, getAllSheets, deleteSheet } from "@/services"
 export default {
     async mounted(){
         this.sheets = await getAllSheets() || [];
+        this.sheetsFilter = this.sheets;
         // console.log("this,sheets",this.sheets);
     },
 
     data(){
         return{
             sheets: [],
-            title:""
+            sheetsFilter: [],
+            title:"",
+            search:"",
         }
     },
 
@@ -65,13 +76,29 @@ export default {
             console.log("delete", id);
             await deleteSheet(id);
             this.sheets = await getAllSheets();
+            await this.filteredList();
         },
 
         editSheet(id){
             console.log("enter edit");
             localStorage.setItem("sheet" , id);
             this.$router.push('compose');
+        },
+        async filteredList() {
+            let arrayOfObj = Object.entries(this.sheets).map((e) => ( "e=",e[1]));
+            
+            arrayOfObj = arrayOfObj.filter(sheet => {
+                return sheet.title.toLowerCase().includes(this.search)
+            })
+            console.log(arrayOfObj);
+            this.sheetsFilter=arrayOfObj;
         }
+
+        
+    },
+
+    computed:{
+        
     }
 
 }

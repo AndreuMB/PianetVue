@@ -217,7 +217,19 @@ export async function deleteSheet(payload){
             return geeks != value;
         });
       
-     }
+    }
+}
 
+export async function getSheetsAll2(){
+    let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets/";
+    let url2 = url+".json";
+    
 
+    return axios.get(url2) // user sheets
+    .then(async (response)=>{ 
+        for (const [key, value] of Object.entries(response.data)) {
+            response.data[key].id=key
+        }
+        return response.data;
+    });
 }

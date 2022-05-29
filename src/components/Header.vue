@@ -6,6 +6,9 @@
             <li class="nav-item">
                 <router-link class="nav-link" to="/home">Home</router-link>
             </li>
+            <li class="nav-item">
+                <router-link class="nav-link" to="/allsheets">Sheets</router-link>
+            </li>
             <li v-if="user" class="nav-item">
                 <router-link class="nav-link" to="/sheets">My Sheets</router-link>
             </li>
@@ -43,15 +46,16 @@ import { logout, getUsername } from "@/services"
 export default {
   async beforeMount() {
     if (localStorage.getItem('idToken')){
-      this.user = true;
-      this.username = localStorage.getItem('username');
-
-    }
-    if (localStorage.getItem('idToken')){
       if (await getUsername()==false) {
         console.log("enter logout");
         this.logoutHeader();
+      }else{
+        this.user = true;
+        this.username = localStorage.getItem('username');
       }
+    }
+    if (localStorage.getItem('idToken')){
+      
     }
     this.emitter.on("userValid", valid => {
       this.user = valid;

@@ -1,5 +1,6 @@
 <template>
     <div class="container p-5">
+        <span class="text-danger">{{error}}</span>
         <form method="POST" @submit="login">
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
@@ -25,7 +26,8 @@ export default {
     data(){
         return{
             email:"",
-            password:""
+            password:"",
+            error:""
         }
     },
 
@@ -33,9 +35,14 @@ export default {
         async login(form){
             form.preventDefault();
             let response = await login({email: this.email, password: this.password, returnSecureToken: true});
-            if (response) {
+            
+            console.log("response error",response);
+            
+            if (response.localId) {
                 this.emitter.emit("userValid", true);
                 this.$router.push('home');
+            }else{
+                this.error=response;
             }
         },
     }

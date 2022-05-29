@@ -9,7 +9,7 @@
 
         <div class="d-flex justify-content-around row p-0">
             <div v-for="sheet of sheetsPopular" :key="sheet" class="card col-2 p-0 m-4">
-                <img :src="sheet.img" class="card-img-top img_card" alt="example-sheet">
+                <img :src="sheet.img" class="card-img-top img_card" style="object-fit: cover; height:20em; object-position: 0 0;" alt="sheet">
                 <div class="card-body bg-dark">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">{{ sheet.title }}</h5>
@@ -31,7 +31,7 @@
 
         <div class="d-flex justify-content-around row p-0">
             <div v-for="sheet of sheetsRandom" :key="sheet" class="card col-2 p-0 m-4">
-                <img :src="sheet.img" class="card-img-top img_card" alt="example-sheet">
+                <img :src="sheet.img" class="card-img-top img_card" style="object-fit: cover; height:20em; object-position: 0 0;" alt="sheet">
                 <div class="card-body bg-dark">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">{{ sheet.title }}</h5>
@@ -53,7 +53,7 @@
 
         <div class="d-flex justify-content-around row p-0">
             <div v-for="sheet of sheetsLatest" :key="sheet" class="card col-2 p-0 m-4">
-                <img :src="sheet.img" class="card-img-top img_card" alt="example-sheet">
+                <img :src="sheet.img" class="card-img-top img_card" style="object-fit: cover; height:20em; object-position: 0 0;" alt="sheet">
                 <div class="card-body bg-dark">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">{{ sheet.title }}</h5>

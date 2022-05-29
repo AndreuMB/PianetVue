@@ -2,16 +2,19 @@
     <div id="container">
         <h1>{{ title }}</h1>
         <div style="background-color: white;" ref="stave_container"></div>
-        <div v-if="view_sw">
+        <div v-if="view_sw" class="user-btns">
             <a v-for="note of notes" :key="note" class="btn btn-dark" @click="print_note(note)">{{note}}</a>
             <br>
             
-            <a class="btn btn-dark bg-white" @click="setDuration('8')"><img src="src/assets/8.png" alt="8"></a>
-            <a class="btn btn-dark bg-white" @click="setDuration('q')"><img src="src/assets/1.png" alt="Q"></a>
-            <a class="btn btn-dark bg-white" @click="setDuration('h')"><img src="src/assets/2.png" alt="H"></a>
+            <a class="btn btn-dark bg-white" @click="setDuration('8')"><img class="size_img" src="src/assets/8.png" alt="8"></a>
+            <a class="btn btn-dark bg-white" @click="setDuration('q')"><img class="size_img" src="src/assets/1.png" alt="Q"></a>
+            <a class="btn btn-dark bg-white" @click="setDuration('h')"><img class="size_img" src="src/assets/2.png" alt="H"></a>
             
-            <a v-if="user" class="btn btn-primary" @click="saveSheet()">Save</a>
-            <div v-if="user" class="btn btn-primary" @click="downloadSheet()">Download</div>
+            <div>
+                <a v-if="user" class="btn btn-primary m-3" @click="saveSheet()">Save</a>
+                <div v-if="user" class="btn btn-primary m-3" @click="downloadSheet()">Download</div>
+            </div>
+            
         </div>
     </div>
 </template>
@@ -35,7 +38,7 @@ export default {
         this.getSheet();
 
         if (localStorage.getItem('idToken') && localStorage.getItem('sheet')){
-            this.saveSheet();      
+            this.saveSheet();
         }
 
         if (this.$route.params.view=="true") {
@@ -80,7 +83,7 @@ export default {
                     console.log("sheet", this.sheet.sheetNotes);
                     this.data.notesComplete = this.sheet.sheetNotes;
                     this.data.notesComplete.forEach((element) => {
-                        // console.log(element.keys);
+                        console.log(element.duration);
                         this.print_note(element.keys,element.duration,false);
                     });
                 }
@@ -119,10 +122,11 @@ export default {
         },
 
         print_note(id,duration,sw=true){
-            // console.log("print_note");
-            
             let data = this.data;
             let context = this.context;
+            if (!sw) {
+                this.setDuration(duration);
+            }
             if (data.timeDuration >= 4) {
                 data.timeDuration=0;
                 data.timex = data.timex + data.timewidth;
@@ -167,9 +171,12 @@ export default {
             }
 
             // console.log('id = ' + id, " context = ", context + " data = " , data);
-
+            // const beams = [new Vex.Flow.Beam(notes1), new Vex.Flow.Beam(notes2), new Vex.Flow.Beam(notes3)];
             // print notes
             Vex.Flow.Formatter.FormatAndDraw(context, data.staveMeasurex, data.notesMeasurex);
+            // beams.forEach((b) => {
+            //     b.setContext(context).draw();
+            // });
             
             context.closeGroup();
             // console.log(data.notesMeasurex);
@@ -287,5 +294,16 @@ export default {
 </script>
 
 <style>
-
+.size_img{
+    image-rendering: -webkit-optimize-contrast;
+    width: 30px;
+    height: 60px;
+}
+.user-btns{
+    position: fixed;
+    bottom: 0px;
+    background: grey;
+    border: black solid 3px;
+    border-radius: 12px;
+}
 </style>

@@ -1,5 +1,6 @@
 <template>
     <div class="container p-5">
+    <span class="text-danger">{{error}}</span>
     <form method="POST" ref="form_login" @submit="register">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
@@ -27,7 +28,7 @@ import { registerAuth } from "@/services"
 export default {
     data(){
         return{
-            // user: false,
+            error: "",
         }
     },
 
@@ -36,10 +37,15 @@ export default {
         async register(event){
             event.preventDefault();
             let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCFfIeHfupYXw89FUOMeorhfQrndz7iIck";
-            await registerAuth(url,
+            let response = await registerAuth(url,
                 {username: this.username, email: this.email, password: this.password}
             );
-            this.$router.push('login');
+            if (response.idToken) {
+                this.$router.push('login');
+            }else{
+                this.error=response;
+            }
+            
         }
     }
 

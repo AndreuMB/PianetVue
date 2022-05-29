@@ -4,10 +4,10 @@ import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
 import Compose from '../components/Compose.vue'
 import Sheets from '../components/Sheets.vue'
+import AllSheets from '../components/AllSheets.vue'
 
 
 const router = createRouter({
-  // history: createWebHistory(import.meta.env.BASE_URL),
   history: createWebHistory(),
   routes: [
     {
@@ -24,6 +24,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/allsheets',
+      name: 'allsheets',
+      component: AllSheets
     },
     {
       path: '/sheets',

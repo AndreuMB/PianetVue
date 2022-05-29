@@ -10,7 +10,13 @@ export const registerAuth = async (url, payload) => {
         localStorage.setItem('idToken',response.data.idToken);
         localStorage.setItem('localId',response.data.localId);
         registerDB(payload);
-    });
+        console.log("response regustrer aurh",response);
+        return response.data;
+    }).catch(function (error){
+        console.log(error.response.data.error.message);
+        error = errorMessage(error.response.data.error.message);
+        return error;
+    })
 }
 
 async function registerDB(payload){
@@ -21,7 +27,6 @@ async function registerDB(payload){
     .then((response)=>{
         localStorage.removeItem('idToken');
         localStorage.removeItem('localId');
-        console.log(response);
     });
 }
 
@@ -33,7 +38,10 @@ export async function login(payload){
         localStorage.setItem('idToken',response.data.idToken);
         localStorage.setItem('localId',response.data.localId);
         await getUsername();
-        return true;
+        return response.data;
+    }).catch(function (error){
+        error = errorMessage(error.response.data.error.message);
+        return error;
     })
 }
 
@@ -55,4 +63,23 @@ export function logout(){
     localStorage.removeItem('idToken');
     localStorage.removeItem('localId');
     localStorage.removeItem("sheet");
+}
+
+function errorMessage(error){
+    let message ="";
+    switch (error) {
+        case "EMAIL_NOT_FOUND":
+            message = "Email not exist";
+            break;
+        case "INVALID_PASSWORD":
+            message = "Password wrong";
+            break;
+        case "EMAIL_EXISTS":
+            message = "Email is already in use";
+            break;
+        default:
+            message = "Error unknown";
+            break;
+    }
+    return message;
 }

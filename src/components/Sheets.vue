@@ -67,7 +67,7 @@ export default {
             localStorage.setItem("sheet", response);
             this.$router.push({
                 name: 'compose',
-                params: {view : false}
+                // params: {view : false}
             });
         },
         
@@ -82,6 +82,7 @@ export default {
         editSheet(id){
             console.log("enter edit");
             localStorage.setItem("sheet" , id);
+            localStorage.removeItem('view');
             this.$router.push('compose');
         },
         async filteredList() {

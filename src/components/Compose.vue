@@ -1,6 +1,15 @@
 <template>
     <div id="container">
-        <h1>{{ title }}</h1>
+        <div class="d-flex justify-content-between">
+            <h1>{{ title }}</h1>
+            <div v-if="rate">
+                <button class="btn btn-primary" @click="updateRating(1)"><i class="fa-solid fa-arrow-up"></i></button>
+                {{ score }}
+                <button class="btn btn-primary" @click="updateRating(0)"><i class="fa-solid fa-arrow-down"></i></button>
+            </div>
+            
+        </div>
+        
         <div ref="stave_container" class="stave"></div>
         <div v-if="view_sw" class="user-btns">
             <a v-for="note of notes" :key="note" class="btn btn-dark" @click="print_note(note)">{{note}}</a>
@@ -12,9 +21,9 @@
                 </button>
             </div>
 
-            <div>
-                <a v-if="user" class="btn btn-primary m-3" @click="saveSheet()">Save</a>
-                <div v-if="user" class="btn btn-primary m-3" @click="downloadSheet()">Download</div>
+            <div v-if="user">
+                <a class="btn btn-primary m-3" @click="saveSheet()">Save</a>
+                <div class="btn btn-primary m-3" @click="downloadSheet()">Download</div>
             </div>
             
         </div>
@@ -23,7 +32,7 @@
 
 <script>
 import Vex from "vexflow";
-import { getSheet, saveSheet, createSheet } from "@/services"
+import { getSheet, saveSheet, createSheet, setRating, getRating } from "@/services"
 import { Canvg } from 'canvg';
 import { jsPDF } from "jspdf";
 export default {
@@ -42,14 +51,20 @@ export default {
         if (localStorage.getItem('idToken') && localStorage.getItem('sheet')){
             this.saveSheet();
         }
-
-        if (this.$route.params.view=="true") {
+        console.log("view = " + localStorage.getItem('view'));
+        if (localStorage.getItem('view')=="true") {
             this.view_sw=false;
+            if (localStorage.getItem('idToken')) {
+                let score = await getRating();
+                if (score != null) {
+                    this.score = score;
+                }
+                this.rate=true;
+            }
         }
     },
     unmounted() {
         window.removeEventListener('resize', this.resizeSheet);
-        // localStorage.removeItem("sheet");
     },
     data(){
         return{
@@ -87,7 +102,9 @@ export default {
             renderer:"",
             sheet : [],
             view_sw : true,
-            image:""
+            image:"",
+            rate:false,
+            score:0,
         }
     },
     methods:{
@@ -318,6 +335,12 @@ export default {
 
             div.remove();
         },
+
+        async updateRating(op){
+            let score = await setRating(op);
+            console.log("raitinsg",score);
+            this.score = score;
+        }
     }
 }
 </script>

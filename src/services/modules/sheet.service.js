@@ -3,7 +3,7 @@ import { getUsername } from './auth.service';
 // const axios = require('axios').default;
 
 
-export async function getSheet(){
+export async function getSheet(sw = true){
     // let url2 = url+localStorage.getItem('sheet')+".json?auth="+localStorage.getItem('idToken');
 
     let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets/";
@@ -13,9 +13,12 @@ export async function getSheet(){
         // console.log("response", response.data);
         return response.data;
     })
-    console.log("views"+sheet.views);
-    await sumView(sheet.views);
-
+    
+    if(sw){
+        console.log("views"+sheet.views);
+        await sumView(sheet.views);
+    }
+    
     return sheet;
 }
 
@@ -232,4 +235,75 @@ export async function getSheetsAll2(){
         }
         return response.data;
     });
+}
+
+export async function getRating(){
+    let rating_data = await axios.get("https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets/"
+    +localStorage.getItem('sheet')+"/rating/score.json?auth="+localStorage.getItem('idToken'))
+    .then(async (response)=>{
+        // console.log("sheets in user", response.data);
+        return response.data;
+    });
+    return rating_data;
+}
+
+export async function setRating(op){
+    let rating_data = await axios.get("https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets/"
+    +localStorage.getItem('sheet')+"/rating.json?auth="+localStorage.getItem('idToken'))
+    .then(async (response)=>{
+        // console.log("sheets in user", response.data);
+        return response.data;
+    });
+
+    // create array sheets user
+    console.log("rating_data", rating_data);
+    let id_user = "";
+    let num_score = 0;
+    if (rating_data != null) {
+        id_user = rating_data.users;
+        num_score = rating_data.score;
+        let found = id_user.find(element => element == localStorage.getItem('localId'));
+        if (!found){
+            id_user.push(localStorage.getItem('localId'));
+            switch (op) {
+                case 0:
+                    num_score = num_score-1;
+                    break;
+        
+                case 1:
+                    num_score = num_score+1;
+                    break;
+            }
+        }
+    }else{
+        id_user = [localStorage.getItem('localId')];
+        switch (op) {
+            case 0:
+                num_score = num_score-1;
+                break;
+    
+            case 1:
+                num_score = num_score+1;
+                break;
+        }
+    }
+
+    
+    console.log("num_score = " + num_score);
+    // if (id_user != null) {
+    //     id_user.push(new_id_sheet);
+    // }else{
+    //     id_user = [new_id_sheet];
+    // }
+    
+    let url = "https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets/";
+    let url2 = url+localStorage.getItem('sheet')+"/rating.json?auth="+localStorage.getItem('idToken');
+    axios.patch(url2,{users:id_user, score:num_score}) // put array sheet user
+    .then(async (response)=>{
+        // console.log("response in user", response);
+        return response.data;
+    });
+
+    return num_score;
+
 }

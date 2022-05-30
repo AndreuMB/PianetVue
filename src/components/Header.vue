@@ -88,6 +88,7 @@ export default {
     },
     toCompose(){
       localStorage.removeItem('sheet');
+      localStorage.removeItem('view');
       this.$router.push('compose');
     }
   }

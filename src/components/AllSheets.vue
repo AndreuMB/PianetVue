@@ -84,9 +84,10 @@ export default {
         play(id){
             console.log("enter play" + id);
             localStorage.setItem('sheet',id);
+            localStorage.setItem("view", true);
             this.$router.push({
                 name: 'compose',
-                params: {view : true}
+                // params: {view : true}
             });
         },
     }

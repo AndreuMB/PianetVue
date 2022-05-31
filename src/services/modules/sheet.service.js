@@ -40,6 +40,7 @@ export async function createSheet(payload){
     let url2=url + ".json?auth="+localStorage.getItem('idToken');
     payload.author=localStorage.getItem("localId");
     payload.views=0;
+    payload.rating.score;
     let new_id_sheet = await axios.post(url2,payload) // post create sheet id
     .then(async (response)=>{
         return response.data.name;
@@ -163,6 +164,9 @@ export async function getHomeSheets(order=""){
             let random = Math.floor(Math.random() * sheetNum);
             console.log(random);
             urlorder='?orderBy="views"&limitToFirst=4&startAt='+random;
+            break;
+        case "score":
+            urlorder='?orderBy="score"&limitToLast=4';
             break;
     }
     let url2 = url+".json"+urlorder;

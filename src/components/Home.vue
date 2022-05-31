@@ -26,7 +26,7 @@
 
     <div>
         <div class="p-3">
-            <h4 class="display-4 contental-center mb-2">DISCOVER</h4>
+            <h4 class="display-4 contental-center mb-2">SCORE</h4>
         </div>
 
         <div class="d-flex justify-content-around row p-0">
@@ -35,7 +35,7 @@
                 <div class="card-body bg-dark">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">{{ sheet.title }}</h5>
-                        <span>{{ sheet.views }}<i class="fa-solid fa-eye"></i></span>
+                        <span>{{ sheet.rating.score }}<i class="fa fa-arrow-up"></i></span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <p class="card-text">{{ sheet.author }}</p>
@@ -81,7 +81,8 @@ export default {
         this.sheetsPopular = await getHomeSheets("views") || [];
         console.log("popula sheets",this.sheetsPopular);
         this.sheetsLatest = await getHomeSheets("date") || [];
-        this.sheetsRandom = await getHomeSheets("random") || []
+        this.sheetsRandom = await getHomeSheets("score") || [];
+        console.log("this.sheetsRandom",this.sheetsRandom);
     },
     data(){
         return{

@@ -40,7 +40,7 @@ export async function createSheet(payload){
     let url2=url + ".json?auth="+localStorage.getItem('idToken');
     payload.author=localStorage.getItem("localId");
     payload.views=0;
-    payload.rating.score;
+    payload.rating={score:0};
     let new_id_sheet = await axios.post(url2,payload) // post create sheet id
     .then(async (response)=>{
         return response.data.name;
@@ -243,7 +243,7 @@ export async function getSheetsAll2(){
 
 export async function getRating(){
     let rating_data = await axios.get("https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets/"
-    +localStorage.getItem('sheet')+"/rating/score.json?auth="+localStorage.getItem('idToken'))
+    +localStorage.getItem('sheet')+"/rating/score.json")
     .then(async (response)=>{
         // console.log("sheets in user", response.data);
         return response.data;

@@ -14,6 +14,7 @@
                 <div class="col-auto">
                     <select class="form-select" v-model="sort" @change="sortBy">
                         <option value="views">Views</option>
+                        <option value="score">Rating</option>
                         <option value="date">Date</option>
                     </select>
                 </div>
@@ -27,6 +28,7 @@
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">{{ sheet.title }}</h5>
                         <span>{{ sheet.views }}<i class="fa-solid fa-eye"></i></span>
+                        <span>{{ sheet.rating.score }}<i class="fa fa-arrow-up"></i></span>
                     </div>
                     <div class="d-flex justify-content-between">
                         <p class="card-text">{{ sheet.author }}</p>

@@ -30,7 +30,7 @@
         </div>
 
         <div class="d-flex justify-content-around row p-0">
-            <div v-for="sheet of sheetsRandom" :key="sheet" class="card col-2 p-0 m-4">
+            <div v-for="sheet of sheetsScore" :key="sheet" class="card col-2 p-0 m-4">
                 <img :src="sheet.img" class="card-img-top img_card" style="object-fit: cover; height:20em; object-position: 0 0;" alt="sheet">
                 <div class="card-body bg-dark">
                     <div class="d-flex justify-content-between">
@@ -78,17 +78,20 @@ import { getHomeSheets } from "@/services"
 
 export default {
     async mounted(){
-        this.sheetsPopular = await getHomeSheets("views") || [];
-        console.log("popula sheets",this.sheetsPopular);
-        this.sheetsLatest = await getHomeSheets("date") || [];
-        this.sheetsRandom = await getHomeSheets("score") || [];
-        console.log("this.sheetsRandom",this.sheetsRandom);
+        let sheetsPopular = await getHomeSheets("views") || [];
+        this.sheetsPopular = this.sortBy(sheetsPopular,"views");
+        let sheetsLatest = await getHomeSheets("date") || [];
+        this.sheetsLatest = this.sortBy(sheetsLatest,"date");
+        let sheetsScore = await getHomeSheets("score") || [];
+        this.sheetsScore = this.sortBy(sheetsScore,"score");
+
     },
     data(){
         return{
             sheetsPopular:[],
             sheetsLatest:[],
-            sheetsRandom:[],
+            sheetsScore:[],
+            sort:"",
         }
     },
     methods:{
@@ -99,6 +102,22 @@ export default {
                 name: 'compose',
                 params: {view : true}
             });
+        },
+        sortBy(object,orderby){
+            this.sort=orderby;
+            let arrayOfObj = Object.entries(object).map((e) => ( "e=",e[1]));
+            arrayOfObj.sort(this.compare)
+            return arrayOfObj
+        },
+
+        compare( a, b ) {
+            if ( a[this.sort] > b[this.sort] ){
+                return -1;
+            }
+            if ( a[this.sort] < b[this.sort] ){
+                return 1;
+            }
+            return 0;
         },
     }
 }

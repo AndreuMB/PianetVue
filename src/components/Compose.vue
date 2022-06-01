@@ -7,6 +7,9 @@
                 {{ score }}
                 <button class="btn btn-primary" @click="updateRating(0)"><i class="fa-solid fa-arrow-down"></i></button>
             </div>
+            <div v-else>
+                <span>{{ score }}<i class="fa fa-arrow-up"></i></span>
+            </div>
             
         </div>
         
@@ -50,16 +53,17 @@ export default {
 
         if (localStorage.getItem('idToken') && localStorage.getItem('sheet')){
             this.saveSheet();
+            this.rate=true;
         }
         console.log("view = " + localStorage.getItem('view'));
         if (localStorage.getItem('view')=="true") {
             this.view_sw=false;
-            if (localStorage.getItem('idToken')) {
-                let score = await getRating();
-                if (score != null) {
-                    this.score = score;
-                }
-                this.rate=true;
+            // if (localStorage.getItem('idToken')) {
+                
+            // }
+            let score = await getRating();
+            if (score != null) {
+                this.score = score;
             }
         }
     },

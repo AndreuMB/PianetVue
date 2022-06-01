@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="card col-2 p-0 m-4 container_image">
-            <img class="card-img-top img_card" src="src/assets/new_sheet.svg" alt="new-sheet">
+            <img class="card-img-top img_card" :src="imgnew" alt="new-sheet">
             <div class="centered">NEW SHEET</div>
             <div class="card-body bg-dark new_body">
                 <form method="POST" @submit="newSheet" >
@@ -43,11 +43,13 @@
 
 <script>
 import { createSheet, getAllSheets, deleteSheet } from "@/services"
+import imgnewp from '@/assets/new_sheet.png'
 export default {
     async mounted(){
         this.sheets = await getAllSheets() || [];
         this.sheetsFilter = this.sheets;
         // console.log("this,sheets",this.sheets);
+        this.imgnew=imgnewp;
     },
 
     data(){
@@ -56,6 +58,7 @@ export default {
             sheetsFilter: [],
             title:"",
             search:"",
+            imgnew:"",
         }
     },
 

@@ -22,7 +22,7 @@
             <div class="btn_time">
                 <button v-for=" time in notesDuration" :key="time" :ref="'btn_'+time.name" 
                 class="btn btn-dark bg-white" @click="setDuration(time.name)">
-                    <img class="size_img" :src="'src/assets/'+time.name+'.png'" :alt="time.name">
+                    <img class="size_img" :src="time.path" :alt="time.name">
                 </button>
             </div>
 
@@ -40,6 +40,10 @@ import Vex from "vexflow";
 import { getSheet, saveSheet, createSheet, setRating, getRating } from "@/services"
 import { Canvg } from 'canvg';
 import { jsPDF } from "jspdf";
+import imgq from '@/assets/q.png';
+import img8 from '@/assets/8.png';
+import imgh from '@/assets/h.png';
+
 export default {
     async mounted() {
         window.addEventListener('resize', this.resizeSheet);
@@ -98,15 +102,18 @@ export default {
             notesDuration:[
                 {
                     name:"8",
-                    duration:0.5
+                    duration:0.5,
+                    path:img8,
                 },
                 {
                     name:"q",
-                    duration:1
+                    duration:1,
+                    path:imgq,
                 },
                 {
                     name:"h",
-                    duration:2
+                    duration:2,
+                    path:imgh,
                 }
             ],
             heightSvg:700,

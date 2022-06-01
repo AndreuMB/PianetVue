@@ -2,13 +2,15 @@
     <div id="container">
         <div class="d-flex justify-content-between">
             <h1>{{ title }}</h1>
-            <div v-if="rate">
-                <button class="btn btn-primary" @click="updateRating(1)"><i class="fa-solid fa-arrow-up"></i></button>
-                {{ score }}
-                <button class="btn btn-primary" @click="updateRating(0)"><i class="fa-solid fa-arrow-down"></i></button>
-            </div>
-            <div v-else>
-                <span>{{ score }}<i class="fa fa-arrow-up"></i></span>
+            <div v-if="view_sw==false">
+                <div v-if="rate">
+                    <button class="btn btn-primary" @click="updateRating(1)"><i class="fa-solid fa-arrow-up"></i></button>
+                    {{ score }}
+                    <button class="btn btn-primary" @click="updateRating(0)"><i class="fa-solid fa-arrow-down"></i></button>
+                </div>
+                <div v-else>
+                    <span>{{ score }}<i class="fa fa-arrow-up"></i></span>
+                </div>
             </div>
             
         </div>
@@ -61,11 +63,16 @@ export default {
             // if (localStorage.getItem('idToken')) {
                 
             // }
+            // if (localStorage.getItem('sheet')) {
             let score = await getRating();
             if (score != null) {
                 this.score = score;
             }
+            // }
+            
         }
+
+        
     },
     unmounted() {
         window.removeEventListener('resize', this.resizeSheet);

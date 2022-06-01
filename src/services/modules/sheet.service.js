@@ -154,7 +154,7 @@ export async function getHomeSheets(order=""){
             urlorder='?orderBy="views"&limitToLast=4';
             break;
         case "date":
-            urlorder='?orderBy="date"&limitToLast=4';
+            urlorder='';
             break;
         case "random":
             let sheetNum = await axios.get("https://daw2022-64f58-default-rtdb.europe-west1.firebasedatabase.app/sheets.json") // user sheets
@@ -166,7 +166,7 @@ export async function getHomeSheets(order=""){
             urlorder='?orderBy="views"&limitToFirst=4&startAt='+random;
             break;
         case "score":
-            urlorder='?orderBy="score"&limitToLast=4';
+            urlorder='';
             break;
     }
     let url2 = url+".json"+urlorder;
@@ -263,7 +263,7 @@ export async function setRating(op){
     console.log("rating_data", rating_data);
     let id_user = "";
     let num_score = 0;
-    if (rating_data != null) {
+    if (rating_data.users != null) {
         id_user = rating_data.users;
         num_score = rating_data.score;
         let found = id_user.find(element => element == localStorage.getItem('localId'));

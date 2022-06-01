@@ -83,7 +83,7 @@ export default {
         let sheetsLatest = await getHomeSheets("date") || [];
         this.sheetsLatest = this.sortBy(sheetsLatest,"date");
         let sheetsScore = await getHomeSheets("score") || [];
-        this.sheetsScore = this.sortBy(sheetsScore,"score");
+        this.sheetsScore = this.sortBy(sheetsScore,"rating.score");
 
     },
     data(){
@@ -92,6 +92,7 @@ export default {
             sheetsLatest:[],
             sheetsScore:[],
             sort:"",
+            sort2:"",
         }
     },
     methods:{
@@ -105,19 +106,25 @@ export default {
         },
         sortBy(object,orderby){
             this.sort=orderby;
+            if (this.sort.indexOf(".")!=-1) {
+                this.sort1 = this.sort.split('.')[0];
+                this.sort2 = this.sort.split('.')[1];
+            }else{
+                this.sort2="";
+            }
             let arrayOfObj = Object.entries(object).map((e) => ( "e=",e[1]));
-            arrayOfObj.sort(this.compare)
-            return arrayOfObj
+            arrayOfObj.sort(this.sortNumber)
+            arrayOfObj = arrayOfObj.slice(0,4);
+            console.log(arrayOfObj);
+            return arrayOfObj;
         },
 
-        compare( a, b ) {
-            if ( a[this.sort] > b[this.sort] ){
-                return -1;
+        sortNumber(a,b){
+            if (this.sort2!="") {
+                return b.rating.score - a.rating.score;
+            }else{
+                return b[this.sort] - a[this.sort];
             }
-            if ( a[this.sort] < b[this.sort] ){
-                return 1;
-            }
-            return 0;
         },
     }
 }

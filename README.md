@@ -22,6 +22,7 @@ Check it here: [https://pianet.netlify.app/](https://pianet.netlify.app/)
 - 📥 **Download** any sheet in PDF format.
 - 🌐 Share your work with the PIANET community.
 
+## Project Setup
 
 ```sh
 npm install

@@ -1,16 +1,27 @@
-# pianet
+# PIANET
 
-This template should help get you started developing with Vue 3 in Vite.
+> ⚠ **Deprecated Project**  
+> This is a deprecated project there are just a few things that still works,
+> having that in account feel free to check it.
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+**Create and share music sheets with the world.**  
 
-## Customize configuration
+PIANET lets musicians easily **compose, share, and discover** sheet music.  
+With a built-in **compose page**, you can write your own sheets from scratch.  
+Use the **search bar** to explore other creations and **download** them as PDFs for offline use.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Check it here: [https://pianet.netlify.app/](https://pianet.netlify.app/)
 
-## Project Setup
+---
+
+## 🚀 Features
+- ✏️ **Compose** your own music sheets directly in the app.
+- 🔍 **Search** for sheets created by other users.
+- 📥 **Download** any sheet in PDF format.
+- 🌐 Share your work with the PIANET community.
+
 
 ```sh
 npm install
